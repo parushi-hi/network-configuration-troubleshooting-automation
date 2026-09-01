@@ -1,0 +1,92 @@
+site: SmartBranch
+
+vlans:
+  - id: 10
+    name: Employee
+    subnet: 192.168.10.0/24
+    gateway: 192.168.10.1
+
+  - id: 20
+    name: Guest
+    subnet: 192.168.20.0/24
+    gateway: 192.168.20.1
+
+  - id: 30
+    name: Server
+    subnet: 192.168.30.0/24
+    gateway: 192.168.30.1
+
+  - id: 99
+    name: Management
+    subnet: 192.168.99.0/24
+    gateway: 192.168.99.1
+
+access_ports:
+  - switch: SW1
+    interface: FastEthernet0/1
+    vlan: 99
+
+  - switch: SW1
+    interface: FastEthernet0/2
+    vlan: 99
+
+  - switch: SW1
+    interface: FastEthernet0/3
+    vlan: 10
+
+  - switch: SW1
+    interface: FastEthernet0/4
+    vlan: 10
+
+  - switch: SW1
+    interface: FastEthernet0/5
+    vlan: 30
+
+  - switch: SW2
+    interface: FastEthernet0/1
+    vlan: 20
+
+  - switch: SW2
+    interface: FastEthernet0/2
+    vlan: 10
+
+  - switch: SW2
+    interface: FastEthernet0/3
+    vlan: 10
+  
+trunks:
+  - switch: SW1
+    interface: GigabitEthernet0/1
+    allowed_vlans: [10, 20, 30, 99]
+
+  - switch: SW1
+    interface: GigabitEthernet0/2
+    allowed_vlans: [10, 20, 30, 99]
+
+  - switch: SW2
+    interface: GigabitEthernet0/1
+    allowed_vlans: [10, 20, 30, 99]
+
+dhcp:
+  - vlan: 10
+    network: 192.168.10.0/24
+    gateway: 192.168.10.1
+    dns: 198.51.100.2
+
+  - vlan: 20
+    network: 192.168.20.0/24
+    gateway: 192.168.20.1
+    dns: 198.51.100.2
+
+nat:
+  outside_interface: GigabitEthernet0/0
+  inside_interfaces:
+    - GigabitEthernet0/1.10
+    - GigabitEthernet0/1.20
+    - GigabitEthernet0/1.30
+    - GigabitEthernet0/1.99
+  overload: true
+
+dns:
+  server: 198.51.100.2
+  domain: smartbranch.com
